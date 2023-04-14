@@ -9,6 +9,14 @@ function App() {
     <div className="app">
       <Routes>
         <Route
+          path="/payment"
+          element={
+            <>
+              <Header />
+            </>
+          }
+        />
+        <Route
           path="/login"
           element={
             <>

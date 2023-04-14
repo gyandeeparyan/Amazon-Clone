@@ -1,7 +1,8 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 const firebaseConfig = {
     apiKey: "AIzaSyDr27zJ6VCBJoBXloP7V9Vk78gRca9oivE",
     authDomain: "clone-72a4b.firebaseapp.com",
@@ -12,10 +13,31 @@ const firebaseConfig = {
     measurementId: "G-B68BJ55P45"
   };
 
-  const firebaseApp = firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth();
 
-const db = firebaseApp.firestore();
-const auth = firebase.auth();
+export function signup(email, password) {
+createUserWithEmailAndPassword(auth, email, password)
 
-export default { db, auth };
+}
 
+export function login(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
+
+export function logout() {
+  return signOut(auth);
+}
+
+// Custom Hook
+export function useAuth() {
+  const [ currentUser, setCurrentUser ] = useState();
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, user => setCurrentUser(user));
+    return unsub;
+  }, [])
+
+  return currentUser;
+}
